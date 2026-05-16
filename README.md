@@ -1,103 +1,79 @@
 # MRI RelaxKit
 
-MRI RelaxKit is a reusable MRI relaxometry SOP and CLI toolkit for research, education, and QA workflows. It converts a brittle MATLAB Live Script style assignment into a reproducible Python command-line workflow with auditable metrics, figures, reports, and release checks.
+<p align="center">
+  <img src="docs/assets/hero.gif" alt="Animated MRI RelaxKit results: synthetic MRI data becomes T2, T1, T2 star, contrast, QA, and SOP artifacts." width="900">
+</p>
 
-## Commercial Positioning
+MRI RelaxKit turns MRI relaxometry teaching and QA data into reproducible fits, figures, metrics, and SOP reports without MATLAB.
 
-MRI RelaxKit is a B2B/B2Edu tool, not a consumer app.
+## What It Produces
 
-Primary buyers and users:
+| Output | Public demo result | Why it matters |
+| --- | ---: | --- |
+| T2 decay fit | `77.41 ms` | Replaces manual script math with auditable fit parameters. |
+| Corrected T1 recovery fit | `1357.25 ms` | Uses corrected recovery modeling plus nonlinear fit checks. |
+| GM voxel T2* fit | `60.03 ms` | Makes voxel coordinate conventions explicit and reviewable. |
+| GM/WM contrast timing | peak TE `90 ms` | Turns protocol contrast choices into a visible curve. |
+| QA review | `PASS`, `9/9` checks | Leaves a machine-readable review trail for each run. |
 
-- MRI course instructors who need a reliable teaching workflow without a heavy MATLAB dependency.
-- Imaging research labs that want repeatable onboarding examples for T1, T2, and T2* fitting.
-- Imaging core facilities that need lightweight protocol QA demos and training artifacts.
-- Medtech and CRO imaging teams that need transparent, non-clinical SOP examples for internal education.
+## Visual Results
 
-Why they would use it:
+<table>
+  <tr>
+    <td><img src="docs/assets/result-fit-summary.png" alt="T2 and T1 fit summary from the public synthetic demo." width="300"></td>
+    <td><img src="docs/assets/result-contrast.png" alt="GM and WM contrast curve with peak TE at 90 ms." width="300"></td>
+    <td><img src="docs/assets/result-t2star.png" alt="Synthetic GRE echo series and GM voxel T2 star fit." width="300"></td>
+  </tr>
+  <tr>
+    <td>T2 and corrected T1 fits</td>
+    <td>GM/WM contrast timing</td>
+    <td>Voxel T2* QA</td>
+  </tr>
+</table>
 
-- It turns legacy MATLAB materials into a reproducible CLI and SOP.
-- It records fit methods, voxel coordinate conventions, QA checks, and source-data fingerprints.
-- It generates reusable artifacts that a team can review, archive, and regenerate.
-- It is explicit about the non-clinical boundary, which makes it safer for public release and commercial discovery.
+Every analysis run writes `metrics.json`, `qa.json`, `report.md`, `report.html`, and publication-ready figures.
 
-## Not Medical Advice
-
-MRI RelaxKit is for research, education, QA, and protocol-training workflows. It is not a clinical diagnostic product and is not validated as a regulated medical device.
-
-## Quick Start
-
-Activate the `dl` conda environment:
+## Run It
 
 ```bash
 conda activate dl
-```
-
-Generate public-safe synthetic demo data:
-
-```bash
+python -m pip install -e ".[assets]"
 python -m mri_relaxkit.cli demo-data --out outputs/demo/demo_relaxometry.mat
-```
-
-Inspect the synthetic demo data:
-
-```bash
-python -m mri_relaxkit.cli inspect outputs/demo/demo_relaxometry.mat
-```
-
-Run and review the synthetic public-demo analysis:
-
-```bash
 python -m mri_relaxkit.cli analyze --input outputs/demo/demo_relaxometry.mat --out outputs/demo/run
 python -m mri_relaxkit.cli review --run outputs/demo/run
 ```
 
-If you have the local legacy assignment fixture, you can also run:
+Regenerate the README visuals from the same public synthetic run:
 
 ```bash
-python -m mri_relaxkit.cli inspect AA1_data.mat
-python -m mri_relaxkit.cli analyze --input AA1_data.mat --out outputs/sample
-python -m mri_relaxkit.cli review --run outputs/sample
+python scripts/build_readme_assets.py --run outputs/demo/run --out-dir docs/assets
 ```
 
-Review the generated run:
+## Who It Is For
+
+MRI RelaxKit is a B2B/B2Edu SOP and CLI toolkit for MRI course instructors, imaging research labs, imaging core facilities, and medtech/CRO imaging teams that need reproducible non-clinical relaxometry training or QA demos.
+
+Teams use it to replace brittle MATLAB Live Script workflows with reviewable Python runs, explicit fit methods, clear voxel conventions, reproducible artifacts, and public-release checks.
+
+## CLI
 
 ```bash
-python -m mri_relaxkit.cli review --run outputs/sample
-```
-
-Run a public-release audit:
-
-```bash
+python -m mri_relaxkit.cli inspect outputs/demo/demo_relaxometry.mat
+python -m mri_relaxkit.cli analyze --input outputs/demo/demo_relaxometry.mat --out outputs/demo/run
+python -m mri_relaxkit.cli review --run outputs/demo/run
 python -m mri_relaxkit.cli release-audit --root .
 ```
 
-## Expected Sample Results
-
-For the local `AA1_data.mat` fixture:
-
-- Simulated T2: about `76.83 ms`
-- Corrected simulated T1: about `1283.28 ms`
-- Default GM example T2*: about `58.68 ms`
-- Default WM/reference T2*: about `49.47 ms`
-- Max GM/WM contrast TE: `90 ms`
-
-Generated run artifacts are written under the output directory:
-
-- `metrics.json`
-- `qa.json`
-- `report.md`
-- `report.html`
-- `figures/`
+If you have private or institutional MAT data in the same schema, point `analyze` at that file. The public repository intentionally ships with synthetic demo data generation instead of redistributed course artifacts.
 
 ## Validation
 
 ```bash
 conda activate dl
-python -m mri_relaxkit.cli demo-data --out outputs/demo/demo_relaxometry.mat
-python -m mri_relaxkit.cli analyze --input outputs/demo/demo_relaxometry.mat --out outputs/demo/run
-python -m mri_relaxkit.cli review --run outputs/demo/run
-python -m pytest
+python -m pytest -q
 python -m mri_relaxkit.cli release-audit --root .
 ```
 
-The release audit can pass while still reporting warnings. Warnings are intended to force human review before a public GitHub push, especially for original course materials, durable-memory files, private paths, or email addresses.
+## Boundary
+
+MRI RelaxKit is for research, education, QA, and protocol-training workflows. It is not a clinical diagnostic product and is not validated as a regulated medical device.
