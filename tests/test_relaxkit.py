@@ -63,8 +63,9 @@ def test_missing_variables_are_rejected(tmp_path: Path) -> None:
 
 
 def test_bad_voxel_is_rejected(tmp_path: Path) -> None:
+    dataset = SAMPLE if SAMPLE.exists() else write_demo_mat(tmp_path / "demo-for-bad-voxel.mat")
     with pytest.raises(ValueError, match="outside image shape"):
-        run_analysis(SAMPLE, tmp_path / "bad", gm_voxel=(999, 1))
+        run_analysis(dataset, tmp_path / "bad", gm_voxel=(999, 1))
 
 
 def test_cli_smoke_with_public_demo_data(tmp_path: Path) -> None:
