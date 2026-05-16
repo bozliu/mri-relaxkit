@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mri-relaxkit"
+version = "0.1.0"
+description = "Reproducible MRI relaxometry SOP and CLI toolkit for research, education, and QA."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "matplotlib",
+  "numpy",
+  "scipy",
+]
+
+[project.scripts]
+mri-relax = "mri_relaxkit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["mri_relaxkit*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

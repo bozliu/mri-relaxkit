@@ -1,0 +1,21 @@
+.DS_Store
+.omx/
+.codexpotter/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+outputs/
+reports/
+*.log
+
+# Local Codex durable task memory; keep out of public release commits.
+Prompt.md
+Plan.md
+Implement.md
+Documentation.md
